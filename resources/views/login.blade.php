@@ -20,7 +20,7 @@
 	<body class="hold-transition login-page">
 	  <div class="login-box">
 	    <div class="login-logo">
-	    <center><img class="img-responsive" src="#" alt="Logo" style="height:75px"></center>
+	    <center><img class="img-responsive" src="#" alt="" style="height:75px"></center>
 	    </div><!-- /.login-logo -->
 	    <div class="login-box-body">
 	      <p class="login-box-msg"></p>
@@ -41,19 +41,19 @@
           </div>
         @endif
 
-	      <form action="#" method="POST">
+	      <form action="{{ route('login.auth') }}" method="POST">
 	          {{ csrf_field() }}
 	        <div class="form-group has-feedback">
-	          <input  class="form-control" type="email" name="email" placeholder="Email">
-	          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+	          <input  class="form-control" type="text" name="usuario" placeholder="Usuario">
+	          <span class="glyphicon glyphicon-user form-control-feedback"></span>
 	        </div>
 	        <div class="form-group has-feedback">
 	          <input id="password" class="form-control" type="password" name="password" placeholder="Password">
 	          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
 	        </div>
-          <p class="text-center">¿No posees una cuenta? <a href="#" title="Registro">Registrate</a>.</p>
+          <p class="text-center">¿No posees una cuenta? <a href="{{ route('empresas.create') }}" title="Registro">Registrate</a>.</p>
 	        <div class="form-group">
-	            <button id="b-login" type="submit" class="btn btn-danger btn-block btn-flat">Login</button>
+	            <button id="b-login" type="submit" class="btn btn-primary btn-block btn-flat">Login</button>
 	        </div>
 	      </form> 
 	    </div><!-- /.login-box-body -->

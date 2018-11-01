@@ -31,11 +31,11 @@
         <a href="{{ route( 'dashboard' ) }}" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini">
-            <img src="{{ asset('images/icon.png') }}" alt="Dr.">
+            <img src="#" alt="Logo">
           </span>
           <!-- logo for regular state and mobile devices -->
           <span class="logo-lg">
-            <img src="{{ asset('images/logo_white.png') }}" alt="Dr. Care">
+            <img src="#" alt="Logo">
           </span>
         </a>
 
@@ -50,40 +50,32 @@
             <ul class="nav navbar-nav">
               <!-- Messages: style can be found in dropdown.less-->
               <!-- User Account: style can be found in dropdown.less -->
-              
-              @if( Auth::user()->role === 'Admin' )
-              <li class="dropdown tasks-menu">
-                <a href="{{ route('users.index') }}#solicitudes" title="Solicitudes de ingreso">
-                  <i class="fa fa-user-plus"></i>
-                  @if( count($notUsers) > 0 )
-                  <span class="label label-warning">{{ count($notUsers) }}</span>
-                  @endif
-                </a>
-              </li>
-              @endif
 
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="hidden-xs">{{ Auth::user()->cedula() }}</span>
+                  <span class="hidden-xs">{{ Auth::user()->usuario }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <p>{{ Auth::user()->nombre }}</p>
+                    <p>{{ Auth::user()->nombre }}<br>
+                      <small>{{ Auth::user()->rut }}</small><br>
+                      <small>{{ Auth::user()->email }}</small>
+                    </p>
                     <p>
-                      {{ Auth::user()->departamento->departamento }}
-                      <small>{{ Auth::user()->cargo->cargo }}</small>
+                      {{ Auth::user()->representante }}
+                      <small>{{ Auth::user()->telefono }}</small>
                     </p>
                   </li>
                   
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="{{ route( 'perfil' ) }}" class="btn btn-flat btn-default"><i class="fa fa-user-circle" aria-hidden="true"></i> Perfil</a>
+                      <a href="{{ route('empresas.perfil') }}" class="btn btn-flat btn-default"><i class="fa fa-user-circle" aria-hidden="true"></i> Perfil</a>
                     </div>
                     
                     <div class="pull-right">
-                      <form id="logout-form" action="{{ route( 'logout' ) }}" method="POST">
+                      <form action="{{ route('login.logout') }}" method="POST">
                         {{ csrf_field() }}
                         <button class="btn btn-flat btn-default" type="submit"><i class="fa fa-sign-out" aria-hidden="true"></i> Salir</button>
                       </form>
@@ -107,65 +99,6 @@
             <li>
               <a href="{{ route('dashboard') }}">
                 <i class="fa fa-home"></i> Inicio
-              </a>
-            </li>
-            
-            @if( Auth::user()->role === 'Admin' )
-
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-building"></i>
-                <span>Departamentos</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="{{ route( 'departamentos.index' ) }}"><i class="fa fa-circle-o"></i>Ver departamentos</a></li>
-                <li><a href="{{ route( 'departamentos.create' ) }}"><i class="fa fa-circle-o"></i>Agregar departamento</a></li>
-              </ul>
-            </li>
-
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-address-card"></i>
-                <span>Cargo</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="{{ route( 'cargos.index' ) }}"><i class="fa fa-circle-o"></i>Ver cargos</a></li>
-                <li><a href="{{ route( 'cargos.create' ) }}"><i class="fa fa-circle-o"></i>Agregar cargo</a></li>
-              </ul>
-            </li>
-
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-users"></i>
-                <span>Usuarios</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="{{ route( 'users.index' ) }}"><i class="fa fa-circle-o"></i>Ver usuarios</a></li>
-                <li><a href="{{ route( 'users.create' ) }}"><i class="fa fa-circle-o"></i>Agregar usuario</a></li>
-              </ul>
-            </li>            
-            @endif
-
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-cubes"></i>
-                <span>Productos</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="{{ route( 'productos.index' ) }}"><i class="fa fa-circle-o"></i>Ver productos</a></li>
-                @if( Auth::user()->role == 'Admin' || Auth::user()->role == 'Operativo' )
-                <li><a href="{{ route( 'productos.create' ) }}"><i class="fa fa-circle-o"></i>Agregar producto</a></li>
-                @endif
-              </ul>
-            </li>
-
-            <li>
-              <a href="{{ route('about.index') }}">
-                <i class="fa fa-exclamation-circle"></i> Sobre Dr. Care
               </a>
             </li>
   
@@ -214,23 +147,6 @@
           language: {
             url:'{{ asset( "plugins/datatables/spanish.json" ) }}'
           }
-        });
-
-        $('.table-products').DataTable({
-          responsive: true,
-          pageLength: 100,
-          language: {
-            url:'{{ asset( "plugins/datatables/spanish.json" ) }}'
-          },
-          rowGroup: {
-            dataSrc: 1
-          },
-          columnDefs: [
-            {
-              "targets": [ 1 ],
-              "visible": false
-            }
-        ]
         });
       })
     </script>

@@ -1,0 +1,11 @@
+
+.list-group-unbordered > .list-group-item{
+  border-bottom: 0;
+  clear: both;
+}
+.list-group-unbordered > .list-group-item:last-child{
+  border-bottom: 1px solid #ddd;
+}
+.list-group-item > span.pull-right{
+  word-wrap: break-word;
+}
