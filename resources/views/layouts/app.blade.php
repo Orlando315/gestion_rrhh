@@ -31,11 +31,11 @@
         <a href="{{ route( 'dashboard' ) }}" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini">
-            <img src="#" alt="Logo">
+            <img src="#" alt="">
           </span>
           <!-- logo for regular state and mobile devices -->
           <span class="logo-lg">
-            <img src="#" alt="Logo">
+            <img src="#" alt="">
           </span>
         </a>
 
@@ -100,6 +100,18 @@
               <a href="{{ route('dashboard') }}">
                 <i class="fa fa-home"></i> Inicio
               </a>
+            </li>
+
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-users"></i>
+                <span>Empleados</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{{ route('empleados.index') }}"><i class="fa fa-circle-o"></i>Ver empleados</a></li>
+                <li><a href="{{ route('empleados.create') }}"><i class="fa fa-circle-o"></i>Agregar empleado</a></li>
+              </ul>
             </li>
   
           </ul>

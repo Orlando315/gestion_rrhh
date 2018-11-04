@@ -8,6 +8,7 @@
 @endsection
 
 @section( 'content' )
+  @include('partials.flash')
   <div class="row">
     <div class="col-md-3 col-sm-6 col-xs-12">
       <div class="info-box">
@@ -27,9 +28,12 @@
       <div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><i class="fa fa-users"></i> Empleados</h3>
+          <span class="pull-right">
+            <a class="btn btn-success btn-flat" href="{{ route('empleados.create') }}"><i class="fa fa-plus" aria-hidden="true"></i> Nuevo empleado</a>
+          </span>
         </div>
         <div class="box-body">
-          <table class="table data-table table-bordered table-hover">
+          <table class="table data-table table-bordered table-hover" style="width: 100%">
             <thead>
               <tr>
                 <th class="text-center">#</th>
@@ -49,7 +53,8 @@
                   <td>{{ $d->rut }}</td>
                   <td>{{ $d->telefono }}</td>
                   <td>
-                    <a class="btn btn-primary btn-flat btn-sm" href="{{ route( 'empleados.show', [ 'id' => $d->id ] )}}"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-primary btn-flat btn-sm" href="{{ route( 'empleados.show', ['id' => $d->id] )}}"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-success btn-flat btn-sm" href="{{ route( 'empleados.edit', ['id' => $d->id] )}}"><i class="fa fa-pencil"></i></a>
                   </td>
                 </tr>
               @endforeach

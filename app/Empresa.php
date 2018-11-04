@@ -29,4 +29,9 @@ class Empresa extends Authenticatable
   {
     return $this->hasOne('App\ConfiguracionEmpresa');
   }
+
+  public function empleados()
+  {
+    return $this->hasMany('App\Empleado');
+  }
 }

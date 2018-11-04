@@ -35,4 +35,16 @@ Route::group([ 'middleware' => ['auth'] ], function () {
   Route::get('/perfil/edit', 'EmpresasController@edit' )->name('empresas.edit');
   Route::patch('/perfil', 'EmpresasController@update')->name('empresas.update');
 
+  /* --- Empleados --- */
+  Route::resource('empleados', 'EmpleadosController');
+
+  /* --- Documentos --- */
+  Route::resource('documentos', 'EmpleadosDocumentosController')->except([
+    'show',
+    'edit',
+    'update'
+  ]);
+  Route::get('documentos/create/{empleado}', 'EmpleadosDocumentosController@create')->name('documentos.create');
+  Route::post('documentos/store/{empleado}', 'EmpleadosDocumentosController@store')->name('documentos.store');
+  Route::get('documentos/download/{documento}', 'EmpleadosDocumentosController@download')->name('documentos.download');
 });

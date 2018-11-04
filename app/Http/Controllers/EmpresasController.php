@@ -40,7 +40,7 @@ class EmpresasController extends Controller
       $this->validate($request, [
         'usuario' => 'required|alpha_num|unique:empresas,usuario',
         'nombre' => 'required|string',
-        'rut' => 'required|string',
+        'rut' => 'required|string|unique:empresas,rut',
         'representante' => 'required|string',
         'email' => 'required|email|unique:empresas,email',
         'telefono' => 'required',
@@ -105,8 +105,8 @@ class EmpresasController extends Controller
     {
       $this->validate($request, [
         'usuario' => 'required|alpha_num|unique:empresas,usuario,' . Auth::user()->id . ',id',
-        'nombre' => 'required|alpha_num',
-        'rut' => 'required|string',
+        'nombre' => 'required|string',
+        'rut' => 'required|string|unique:empresas,rut,' . Auth::user()->id . ',id',
         'representante' => 'required|string',
         'email' => 'required|email|unique:empresas,email,' . Auth::user()->id . ',id',
         'telefono' => 'required',

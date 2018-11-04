@@ -31,6 +31,10 @@
                 <span class="pull-right">{{ Auth::user()->nombre }}</span>
               </li>
               <li class="list-group-item">
+                <b>RUT</b>
+                <span class="pull-right">{{ Auth::user()->rut }}</span>
+              </li>
+              <li class="list-group-item">
                 <b>Email</b>
                 <span class="pull-right">{{ Auth::user()->email }}</span>
               </li>

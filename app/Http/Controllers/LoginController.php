@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Empleado;
 
 class LoginController extends Controller
 {
     public function dashboard()
     {
-      $empleados = [];
+      $empleados = Empleado::all();
 
       return view('dashboard', ['empleados' => $empleados]);
     }

@@ -18,8 +18,6 @@ class CreateConfiguracionEmpresasTable extends Migration
             $table->unsignedInteger('empresa_id');
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
             $table->string('jornada', 3);
-            $table->string('dias_laborales', 15);
-            $table->string('dias_descanso', 15);
         });
     }
 
