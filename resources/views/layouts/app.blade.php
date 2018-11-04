@@ -15,13 +15,17 @@
     <!-- Theme style -->
     <link rel="stylesheet" type="text/css" href="{{ asset( 'css/AdminLTE.min.css' ) }}">
     <link rel="stylesheet" type="text/css" href="{{ asset( 'css/glyphicons.css' ) }}">
+    <!-- Datatable -->
     <link rel="stylesheet" type="text/css" href="{{ asset( 'plugins/datatables/dataTables.min.css' ) }}">
     <link rel="stylesheet" type="text/css" href="{{ asset( 'plugins/datatables/RowGroup/css/rowGroup.bootstrap.min.css' ) }}">
-
+    <!-- Datepicker -->
     <link rel="stylesheet" type="text/css" href="{{ asset( 'plugins/datepicker/css/bootstrap-datepicker3.min.css' ) }}">
+    <!-- Fullcalendar -->
+    <link rel="stylesheet" type="text/css" href="{{ asset( 'plugins/fullcalendar/fullcalendar.min.css' ) }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ asset( 'css/_all-skins.min.css' ) }}">
+    <!-- Custom -->
     <link rel="stylesheet" href="{{ asset( 'css/style.css' ) }}">
   </head>
   <body class="hold-transition skin-red sidebar-mini">
@@ -150,6 +154,10 @@
     <!-- Datepicker -->
     <script type="text/javascript" src="{{ asset( 'plugins/datepicker/js/bootstrap-datepicker.min.js' ) }}"></script>
     <script type="text/javascript" src="{{ asset( 'plugins/datepicker/locales/bootstrap-datepicker.es.min.js' ) }}"></script>
+    <!-- Fullcalendar -->
+    <script type="text/javascript" src="{{ asset( 'plugins/fullcalendar/lib/moment.min.js' ) }}"></script>
+    <script type="text/javascript" src="{{ asset( 'plugins/fullcalendar/fullcalendar.min.js' ) }}"></script>
+    <script type="text/javascript" src="{{ asset( 'plugins/fullcalendar/locale/es.js' ) }}"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         $('div.alert').not('.alert-important').delay(7000).slideUp(300);

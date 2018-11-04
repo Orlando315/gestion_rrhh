@@ -136,7 +136,13 @@
 @section( 'scripts' )
 <script type="text/javascript">
   $(document).ready( function(){
-
+    $('#inicio, #fin').datepicker({
+      format: 'dd-mm-yyyy',
+      startDate: 'today',
+      language: 'es',
+      keyboardNavigation: false,
+      autoclose: true
+    });
   });
 </script>
 @endsection

@@ -45,4 +45,9 @@ Route::group([ 'middleware' => ['auth'] ], function () {
   Route::get('documentos/create/{empleado}', 'EmpleadosDocumentosController@create')->name('documentos.create');
   Route::post('documentos/store/{empleado}', 'EmpleadosDocumentosController@store')->name('documentos.store');
   Route::get('documentos/download/{documento}', 'EmpleadosDocumentosController@download')->name('documentos.download');
+
+  /* --- Eventos --- */
+  Route::get('eventos/', 'EmpleadosEventosController@index')->name('eventos.index');
+  Route::post('eventos/{empleado}', 'EmpleadosEventosController@store')->name('eventos.store');
+  Route::delete('eventos/{evento}', 'EmpleadosEventosController@destroy')->name('eventos.destroy');
 });
