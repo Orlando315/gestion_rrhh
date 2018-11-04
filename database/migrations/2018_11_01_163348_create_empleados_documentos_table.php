@@ -19,7 +19,7 @@ class CreateEmpleadosDocumentosTable extends Migration
             $table->foreign('empleado_id')->references('id')->on('empleados')->onDelete('cascade');
             $table->string('nombre', 100)->nullable();
             $table->string('path', 100)->nullable();
-            $table->string('mime', 30);
+            $table->string('mime', 100);
             $table->date('vencimiento')->nullable();
             $table->timestamps();
         });

@@ -38,9 +38,19 @@ class EmpleadosDocumentosController extends Controller
      */
     public function store(Request $request, Empleado $empleado)
     {
+
+      if($empleado->documentos()->count() >= 10){
+        return redirect('empleados/' . $empleado->id)->with([
+          'flash_message' => 'No se pueden agregar mas documentos a este empleado.',
+          'flash_class' => 'alert-danger',
+          'flash_important' => true
+          ]);
+      }
+
       $this->validate($request, [
         'nombre' => 'required|string',
-        'documento' => 'required|file|mimetypes:image/jpeg,image/png,application/postscript,application/pdf',
+        'documento' => 'required|file|mimetypes:image/jpeg,image/png,application/postscript,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'vencimiento' => 'nullable|date_format:d-m-Y'
       ]);
 
       $documento = new EmpleadosDocumento;
@@ -91,9 +101,9 @@ class EmpleadosDocumentosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(EmpleadosDocumento $documento)
     {
-        //
+      return view('documentos.edit', ['documento'=>$documento]);
     }
 
     /**
@@ -103,9 +113,28 @@ class EmpleadosDocumentosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, EmpleadosDocumento $documento)
     {
-        //
+      $this->validate($request, [
+        'nombre' => 'required|string',
+        'vencimiento' => 'nullable|date_format:d-m-Y'
+      ]);
+
+      $documento->nombre = $request->nombre;
+      $documento->vencimiento = $request->vencimiento;
+
+      if($documento->save()){        
+        return redirect('empleados/' . $documento->empleado_id)->with([
+          'flash_message' => 'Documento editado correctamente.',
+          'flash_class' => 'alert-success'
+          ]);
+      }else{
+        return redirect('empleados/' . $documento->empleado_id)->with([
+          'flash_message' => 'Ha ocurrido un error.',
+          'flash_class' => 'alert-danger',
+          'flash_important' => true
+          ]);
+      }
     }
 
     /**

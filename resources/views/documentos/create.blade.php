@@ -23,7 +23,7 @@
 
         <div class="form-group {{ $errors->has('documento') ? 'has-error' : '' }}">
           <label class="control-label" for="documento">Documento: *</label>
-          <input id="documento" type="file" name="documento" required>
+          <input id="documento" type="file" name="documento" accept="image/jpeg,image/png,application/postscript,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
         </div>
 
         <div class="form-group {{ $errors->has('vencimiento') ? 'has-error' : '' }}">
@@ -36,13 +36,13 @@
           <ul>
             @foreach($errors->all() as $error)
                <li>{{ $error }}</li>
-             @endforeach
+            @endforeach
           </ul>  
         </div>
         @endif
 
         <div class="form-group text-right">
-          <a class="btn btn-flat btn-default" href="{{ route('empleados.show', [$empleado]) }}"><i class="fa fa-reply"></i> Atras</a>
+          <a class="btn btn-flat btn-default" href="{{ url()->previous() }}"><i class="fa fa-reply"></i> Atras</a>
           <button class="btn btn-flat btn-primary" type="submit"><i class="fa fa-send"></i> Guardar</button>
         </div>
       </form>

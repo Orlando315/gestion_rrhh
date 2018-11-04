@@ -41,8 +41,6 @@ Route::group([ 'middleware' => ['auth'] ], function () {
   /* --- Documentos --- */
   Route::resource('documentos', 'EmpleadosDocumentosController')->except([
     'show',
-    'edit',
-    'update'
   ]);
   Route::get('documentos/create/{empleado}', 'EmpleadosDocumentosController@create')->name('documentos.create');
   Route::post('documentos/store/{empleado}', 'EmpleadosDocumentosController@store')->name('documentos.store');

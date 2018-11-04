@@ -16,8 +16,9 @@ class EmpleadosDocumento extends Model
   public function generateThumb()
   {
 
-    $icon = $this->getIconByMime();
+    $icon     = $this->getIconByMime();
     $download = $this->getDownloadLink();
+    $edit     = $this->getEditLink();
 
     $vencimiento = $this->vencimiento ? '<b>Vencimiento:</b> ' . $this->vencimiento : '';
 
@@ -33,12 +34,17 @@ class EmpleadosDocumento extends Model
                     <ul class='dropdown-menu dropdown-menu-right'>
                       <li>
                         <a title='Descargar documento' href='{$download}'>
-                          Descargar <i class='fa fa-download' aria-hidden='true'></i>
+                          <i class='fa fa-download' aria-hidden='true'></i> Descargar
+                        </a>
+                      </li>
+                      <li>
+                        <a title='Editar documento' href='{$edit}'>
+                          <i class='fa fa-pencil' aria-hidden='true'></i> Editar
                         </a>
                       </li>
                       <li>
                         <a type='button' title='Eliminar archivo' data-file='{$this->id}' class='btn-delete-file' data-toggle='modal' data-target='#delFileModal'>
-                          Eliminar
+                          <i class='fa fa-times' aria-hidden='true'></i> Eliminar
                         </a>
                       </li>
                     </ul>
@@ -56,24 +62,41 @@ class EmpleadosDocumento extends Model
     return route('documentos.download', ['id' => $this->id]);
   }
 
+  public function getEditLink()
+  {
+    return route('documentos.edit', ['id' => $this->id]);
+  }
+
   protected function getIconByMime()
   {
     switch ($this->mime) {
       case 'image/jpeg':
       case 'image/png':
-        $url = 'fa-picture-o';
+        $icon = 'fa-picture-o';
         break;
 
       case 'application/pdf':
-        $url = 'fa-pdf-o';
+        $icon = 'fa-pdf-o';
+        break;
+
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        $icon = 'fa-file-word-o';
+        break;
+
+      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        $icon = 'fa-file-excel-o';
+        break;
+
+      case 'text/plain':
+        $icon = 'fa-file-text';
         break;
       
       default:
-        $url = 'fa-file';
+        $icon = 'fa-file';
         break;
     }
 
-    return $url;
+    return $icon;
   }
 
   public function setVencimientoAttribute($date)

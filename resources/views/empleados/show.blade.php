@@ -30,7 +30,7 @@
 
             <ul class="list-group list-group-unbordered">
               <li class="list-group-item">
-                <b>Nombre</b>
+                <b>Nombres</b>
                 <span class="pull-right">{{ $empleado->nombres }}</span>
               </li>
               <li class="list-group-item">
@@ -103,7 +103,7 @@
             <ul class="list-group list-group-unbordered">
               <li class="list-group-item">
                 <b>Sueldo</b>
-                <span class="pull-right">{{ $empleado->contrato->sueldo }}</span>
+                <span class="pull-right">{{ number_format($empleado->contrato->sueldo, 0, ',', '.') }}</span>
               </li>
               <li class="list-group-item">
                 <b>Inicio</b>
@@ -122,9 +122,11 @@
         <div class="col-md-12" style="margin-bottom: 5px">
           <h4>
             Documentos
+            @if($empleado->documentos()->count() < 10)
             <span class="pull-right">
               <a class="btn btn-flat btn-success btn-sm" href="{{ route('documentos.create', ['empleado' => $empleado->id]) }}"><i class="fa fa-plus" aria-hidden="true"></i> Agregar</a>
             </span>
+            @endif
           </h4>
         </div>
         @foreach($empleado->documentos()->get() as $documento)
