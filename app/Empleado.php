@@ -4,11 +4,19 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Scopes\IdScope;
 use Carbon\Carbon;
 
 class Empleado extends Model
 {
   use SoftDeletes;
+
+  protected static function boot()
+  {
+    parent::boot();
+
+    static::addGlobalScope(new IdScope);
+  }
 
   protected $fillable = [
     'nombres',

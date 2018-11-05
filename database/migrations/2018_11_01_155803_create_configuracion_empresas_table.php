@@ -17,7 +17,7 @@ class CreateConfiguracionEmpresasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('empresa_id');
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
-            $table->string('jornada', 3);
+            $table->string('jornada', 5);
         });
     }
 
