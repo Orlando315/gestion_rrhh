@@ -71,12 +71,12 @@
 
           <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
             <label class="control-label" for="password">Contraseña: *</label>
-            <input id="password" class="form-control" type="text" name="password" value="{{ old('password') ? old('password') : '' }}" placeholder="Contraseña" required>
+            <input id="password" class="form-control" type="password" name="password" value="{{ old('password') ? old('password') : '' }}" placeholder="Contraseña" required>
           </div>
 
           <div class="form-group {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
             <label class="control-label" for="password_confirmation">Verificar contraseña: *</label>
-            <input id="password_confirmation" class="form-control" type="text" name="password_confirmation" value="{{ old('password_confirmation') ? old('password_confirmation') : '' }}" placeholder="Verificar contraseña" required>
+            <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" value="{{ old('password_confirmation') ? old('password_confirmation') : '' }}" placeholder="Verificar contraseña" required>
           </div>
 
           @if (count($errors) > 0)

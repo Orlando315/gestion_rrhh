@@ -17,7 +17,8 @@ class CreateEmpleadosEventosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('empleado_id');
             $table->foreign('empleado_id')->references('id')->on('empleados')->onDelete('cascade');
-            $table->date('fecha');
+            $table->date('inicio');
+            $table->date('fin')->nullable();
             $table->tinyInteger('tipo');
             $table->timestamps();
         });

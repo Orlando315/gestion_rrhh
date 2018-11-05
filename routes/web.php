@@ -36,6 +36,8 @@ Route::group([ 'middleware' => ['auth'] ], function () {
   Route::patch('/perfil', 'EmpresasController@update')->name('empresas.update');
 
   /* --- Empleados --- */
+  Route::get('empleados/{empleado}/cambio', 'EmpleadosController@cambio')->name('empleados.cambio');
+  Route::post('empleados/{empleado}/cambio', 'EmpleadosController@cambioStore')->name('empleados.cambioStore');
   Route::resource('empleados', 'EmpleadosController');
 
   /* --- Documentos --- */

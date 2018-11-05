@@ -60,18 +60,11 @@ class EmpleadosController extends Controller
         $request->merge(['jornada' => Auth::user()->configuracion->jornada]);
       }
 
-      $empleado = new Empleado;
-      $empleado->fill($request->all());
+      $empleado = new Empleado($request->all());
 
       if($emplado = Auth::user()->empleados()->save($empleado)){
         
-        $empleado->contrato()->create($request->all());
-
-        if(!$request->has('jornada')){
-          $empleado->contrato->jornada = Auth::user()->jornada;
-
-          $empleado->contrato()->save();
-        }
+        $empleado->contratos()->create($request->all());
 
         $empleado->banco()->create($request->all());
 
@@ -144,7 +137,7 @@ class EmpleadosController extends Controller
       }
 
       $empleado->fill($request->all());
-      $empleado->contrato->fill($request->all());
+      $empleado->contratos->first()->fill($request->all());
       $empleado->banco->fill($request->all());
 
       if($empleado->push()){
@@ -183,6 +176,42 @@ class EmpleadosController extends Controller
           'flash_message'   => 'Ha ocurrido un error.',
           'flash_important' => true
         ]);
+      }
+    }
+
+    public function cambio($empleado)
+    {
+      return view('empleados.cambio', ['empleado'=>$empleado]);
+    }
+
+    public function cambioStore(Request $request, Empleado $empleado)
+    {
+      $this->validate($request, [
+        'inicio' => 'required|date_format:d-m-Y',
+        'fin' => 'nullable|date_format:d-m-Y',
+        'jornada' => 'nullable',
+      ]);
+      $lastContrato = $empleado->contratos->last();
+
+      if(!$request->jornada){
+        $request->merge(['jornada' => Auth::user()->configuracion->jornada]);
+      }
+      $request->merge(['sueldo' => $lastContrato->sueldo]);
+
+      if($empleado->contratos()->create($request->all())){
+        $lastContrato->fin = $request->inicio;
+        $lastContrato->save();
+
+        return redirect('empleados/' . $empleado->id)->with([
+          'flash_message' => 'Cambio de jornada exitoso.',
+          'flash_class' => 'alert-success'
+          ]);
+      }else{
+        return redirect('empleados/' . $empleado->id . '/cambio')->with([
+          'flash_message' => 'Ha ocurrido un error.',
+          'flash_class' => 'alert-danger',
+          'flash_important' => true
+          ]);
       }
     }
 }

@@ -25,11 +25,10 @@ class Empleado extends Model
 
   protected $guarded = ['empresa_id'];
 
-  public function contrato()
+  public function contratos()
   {
-    return $this->hasOne('App\EmpleadosContrato');
+    return $this->hasMany('App\EmpleadosContrato');
   }
-
   public function banco()
   {
     return $this->hasOne('App\EmpleadosBanco');
@@ -52,61 +51,68 @@ class Empleado extends Model
 
   public function proyectarJornada()
   {
-    $eventDate = $contratoStart = new Carbon(date('Y-m-d', strtotime($this->contrato->inicio)));
-    $contratoEnd = $this->contrato->fin ? new Carbon(date('Y-m-d', strtotime($this->contrato->fin))) : $contratoStart->addMonths(6);
-    
-    $diffInDays = $contratoStart->diffInDays($contratoEnd);
-    
-    $jornada = $this->jornada();
-    $interval = (int) ceil($diffInDays / $jornada->interval);
-
     $events = ['trabajo' => [], 'descanso'=>[]];
 
-    for ($i=0; $i <= $interval; $i++){
-      $trabajo = [
-        'title' => 'Trabajo',
-        'start' => $eventDate->toDateString(),
-        'end' => $eventDate->addDays($jornada->trabajo)->toDateString(),
-        'allday' => true
-      ];
-      $events['trabajo'][] = $trabajo;
+    foreach ($this->contratos()->get() as $lastContrato){
 
-      $descanso = [
-        'title' => 'Descanso',
-        'start' => $eventDate->toDateString(),
-        'end' => $eventDate->addDays($jornada->descanso)->toDateString(),
-        'allday' => true,
-      ];
-      $events['descanso'][] = $descanso;
+      $contratoStart = new Carbon(date('Y-m-d', strtotime($lastContrato->inicio)));
+      $contratoEnd = $lastContrato->fin ? new Carbon(date('Y-m-d', strtotime($lastContrato->fin))) : $contratoStart->copy()->addMonths(6);
+      
+      $diffInDays = $contratoStart->diffInDays($contratoEnd);
+      $jornada = $lastContrato->jornada();
+      $interval = (int) ceil($diffInDays / $jornada->interval);
+      $endDifInDays = 1;
+
+      for ($i=0; $i < $interval; $i++){
+        $endJornada = $contratoStart->copy()->addDays($jornada->trabajo);
+
+        if($i == ($interval - 1)){
+          $endDifInDays = $endJornada->diffInDays($contratoEnd, false);
+
+          if($endDifInDays < 0){
+            $endJornada = $endJornada->subDays(($endDifInDays * -1));
+          }
+        }
+
+        $trabajo = [
+          'title' => 'Trabajo ' . $lastContrato->jornada,
+          'start' => $contratoStart->toDateString(),
+          'end' => $endJornada->toDateString(),
+          'allday' => true
+        ];
+
+        $contratoStart->addDays($jornada->trabajo);
+
+        $events['trabajo'][] = $trabajo;
+        
+        if($endDifInDays < 0){
+          break;
+        }
+
+        $endJornada = $contratoStart->copy()->addDays($jornada->descanso);
+
+        if($i == ($interval - 1)){
+          $endDifInDays = $endJornada->diffInDays($contratoEnd, false);
+
+          if($endDifInDays < 0){
+            $endJornada = $endJornada->subDays(($endDifInDays * -1));
+          }
+        }
+
+        $descanso = [
+          'title' => 'Descanso ' . $lastContrato->jornada,
+          'start' => $contratoStart->toDateString(),
+          'end' => $endJornada->toDateString(),
+          'allday' => true,
+        ];
+
+        $contratoStart->addDays($jornada->descanso);
+        $events['descanso'][] = $descanso;
+      }
+
     }
 
     return $events;
-  }
-
-  protected function jornada()
-  {
-    switch ($this->contrato->jornada) {
-      case '5x2':
-        $dias = ['trabajo'=>5, 'descanso'=>2, 'interval'=>7];
-        break;
-      case '4x3':
-        $dias = ['trabajo'=>4, 'descanso'=>3, 'interval'=>7];
-        break;
-      case '7x7':
-        $dias = ['trabajo'=>7, 'descanso'=>7, 'interval'=>14];
-        break;
-      case '10x10':
-        $dias = ['trabajo'=>10, 'descanso'=>10, 'interval'=>20];
-        break;
-      case '12x12':
-        $dias = ['trabajo'=>12, 'descanso'=>12, 'interval'=>24];
-        break;
-      case '20x10':
-        $dias = ['trabajo'=>20, 'descanso'=>10, 'interval'=>30];
-        break;
-    }
-
-    return (object)$dias;
   }
 
   public function getEventos()
@@ -119,8 +125,8 @@ class Empleado extends Model
         'id' => $evento->id,
         'className' => 'clickableEvent',
         'title' => $data->titulo,
-        'start' => $evento->fecha,
-        'allday'=> true,
+        'start' => $evento->inicio,
+        'end' => $evento->fin,
         'color' => $data->color
       ];
     }

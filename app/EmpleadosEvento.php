@@ -3,32 +3,34 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class EmpleadosEvento extends Model
 {
   protected $fillable = [
     'empleado_id',
-    'fecha',
+    'inicio',
+    'fin',
     'tipo'
   ];
 
-  public function getEventos()
+  public function getFinAttribute($date)
   {
-    foreach ($this->all() as $key => $value) {
-    }
+    $date = new Carbon("$date");
+    return $date->addDays(1)->toDateString();
   }
 
   public function eventoData()
   {
     switch($this->tipo){
       case '1':
-        $data = ['titulo'=>'Licencia médica','color'=>'#aa6708'];
+        $data = ['titulo'=>'Licencia médica', 'color'=>'#aa6708'];
         break;
       case '2':
-        $data = ['titulo'=>'Vacaciones',' color'=> '#6f5499'];
+        $data = ['titulo'=>'Vacaciones', 'color'=> '#6f5499'];
         break;
       case '3':
-        $data = ['titulo'=>'Permiso',' color'=> '#ecf0f5'];
+        $data = ['titulo'=>'Permiso', 'color'=> '#3c8dbc'];
         break;
       case '4':
         $data = ['titulo'=>'Permiso no remunerable', 'color'=> '#222d32'];
@@ -38,6 +40,9 @@ class EmpleadosEvento extends Model
         break;
       case '6':
         $data = ['titulo'=>'Renuncia', 'color'=> '#ce4844'];
+        break;
+      case '7':
+        $data = ['titulo'=>'Inasistencia', 'color'=> '#4f5b94'];
         break;
     }
     return (object) $data;

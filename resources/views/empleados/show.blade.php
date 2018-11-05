@@ -12,6 +12,7 @@
   <section>
     <a class="btn btn-flat btn-default" href="{{ route('dashboard') }}"><i class="fa fa-reply" aria-hidden="true"></i> Volver</a>
     <a class="btn btn-flat btn-success" href="{{ route('empleados.edit', [$empleado->id]) }}"><i class="fa fa-pencil" aria-hidden="true"></i> Editar</a>
+    <a class="btn btn-flat btn-warning" href="{{ route('empleados.cambio', [$empleado->id]) }}"><i class="fa fa-refresh" aria-hidden="true"></i> Cambio de jornada</a>
     <button class="btn btn-flat btn-danger" data-toggle="modal" data-target="#delModal"><i class="fa fa-times" aria-hidden="true"></i> Eliminar</button>
   </section>
 
@@ -102,16 +103,20 @@
 
             <ul class="list-group list-group-unbordered">
               <li class="list-group-item">
+                <b>Jornada</b>
+                <span class="pull-right">{{ $empleado->contratos->last()->jornada }}</span>
+              </li>
+              <li class="list-group-item">
                 <b>Sueldo</b>
-                <span class="pull-right">{{ number_format($empleado->contrato->sueldo, 0, ',', '.') }}</span>
+                <span class="pull-right">{{ number_format($empleado->contratos->last()->sueldo, 0, ',', '.') }}</span>
               </li>
               <li class="list-group-item">
                 <b>Inicio</b>
-                <span class="pull-right">{{ $empleado->contrato->inicio }}</span>
+                <span class="pull-right">{{ $empleado->contratos->last()->inicio }}</span>
               </li>
               <li class="list-group-item">
                 <b>Fin</b>
-                <span class="pull-right"> {!! $empleado->contrato->fin ? $empleado->contrato->fin : '<span class="text-muted">Indefinido</span>' !!} </span>
+                <span class="pull-right"> {!! $empleado->contratos->last()->fin ? $empleado->contratos->last()->fin : '<span class="text-muted">Indefinido</span>' !!} </span>
               </li>
             </ul>
           </div><!-- /.box-body -->
@@ -231,18 +236,17 @@
         <div class="modal-body">
           <div class="row">
           <div class="col-md-8 col-md-offset-2">
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" style="display: none">
               <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
               <strong class="text-center">Ha ocurrido un error.</strong> 
             </div>
           </div>
             <form id="eventForm" class="col-md-8 col-md-offset-2" action="{{ route('eventos.store', ['empleado'=>$empleado->id]) }}" method="POST">
-              <input type="hidden" name="empleado_id" value="{{ $empleado->id }}">
-              <input id="eventDay" type="hidden" name="fecha" value="">
+              <input id="eventDay" type="hidden" name="inicio" value="">
               {{ csrf_field() }}
               <h4 class="text-center" id="eventTitle"></span></h4>
               <div class="form-group">
-                <label for="tipo">Evento:</label>
+                <label for="tipo">Evento: *</label>
                 <select id="tipo" class="form-control" name="tipo" required>
                   <option value="">Seleccione...</option>
                   <option value="1">Licencia médica</option>
@@ -251,7 +255,13 @@
                   <option value="4">Permiso no remunerable</option>
                   <option value="5">Despido</option>
                   <option value="6">Renuncia</option>
+                  <option value="7">Inasistencia</option>
                 </select>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label" for="fin">Fin:</label>
+                <input id="fin" class="form-control" type="text" name="fin" placeholder="yyy-mm-dd">
               </div>
 
               <center>
@@ -356,6 +366,14 @@
         $('#delete-file-form').attr('action', action);
       });
 
+      $('#fin').datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: 'today',
+        language: 'es',
+        keyboardNavigation: false,
+        autoclose: true
+      });
+
       $('#delete-file-form').submit(deleteFile);
       $('#eventForm').submit(storeEvent)
       $('#delEventForm').submit(delEvent)
@@ -364,12 +382,12 @@
         locale: 'es',
         eventSources: [{
           events: jornada.trabajo,
-          color: '#3c8dbc',
+          color: '#00a65a',
           textcolor: 'white'
         },
         {
           events: jornada.descanso,
-          color: '#00a65a',
+          color: '#9c9c9c',
           textcolor: 'white'
         },
         {
@@ -378,16 +396,14 @@
           textcolor: 'white'
         },
         {
-          events: eventos
-        }
-        ],
+          events: eventos,
+        }],
         dayClick: function(date){
           $('#eventTitle').text(date.format())
           $('#eventDay').val(date.format())
           $('#eventsModal').modal('show')
         },
         eventClick: function(event){
-          console.log(event)
           if(event.id){
             $('#delEventModal').modal('show');
             $('#delEventForm').attr('action', '{{ route("eventos.index") }}/' + event.id);
@@ -446,7 +462,8 @@
             id: r.evento.id,
             className: 'clickableEvent',
             title: r.data.titulo,
-            start: r.evento.fecha,
+            start: r.evento.inicio,
+            end: r.evento.fin,
             allDay: true,
             color: r.data.color
           });

@@ -38,7 +38,8 @@ class EmpleadosEventosController extends Controller
     {
       $this->validate($request, [
         'tipo' => 'required',
-        'fecha' => 'nullable|date_format:Y-m-d',
+        'inicio' => 'required|date_format:Y-m-d',
+        'fin' => 'nullable|date_format:Y-m-d',
       ]);
 
       if($evento = $empleado->eventos()->create($request->all())){

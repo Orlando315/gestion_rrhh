@@ -86,29 +86,29 @@
 
           <div class="form-group {{ $errors->has('sueldo') ? 'has-error' : '' }}">
             <label class="control-label" for="sueldo">Sueldo: *</label>
-            <input id="sueldo" class="form-control" type="number" step="1" min="1" maxlength="999999999999999" name="sueldo" value="{{ old('sueldo') ? old('sueldo') : $empleado->contrato->sueldo }}" placeholder="Sueldo" required>
+            <input id="sueldo" class="form-control" type="number" step="1" min="1" maxlength="999999999999999" name="sueldo" value="{{ old('sueldo') ? old('sueldo') : $empleado->contratos->last()->sueldo }}" placeholder="Sueldo" required>
           </div>
 
           <div class="form-group {{ $errors->has('inicio') ? 'has-error' : '' }}">
             <label class="control-label" for="inicio">Inicio: *</label>
-            <input id="inicio" class="form-control" type="text" name="inicio" value="{{ old('inicio') ? old('inicio') : $empleado->contrato->inicio }}" placeholder="dd-mm-yyyy" required>
+            <input id="inicio" class="form-control" type="text" name="inicio" value="{{ old('inicio') ? old('inicio') : $empleado->contratos->last()->inicio }}" placeholder="dd-mm-yyyy" required>
           </div>
 
           <div class="form-group {{ $errors->has('fin') ? 'has-error' : '' }}">
             <label class="control-label" for="fin">Fin:</label>
-            <input id="fin" class="form-control" type="text" name="fin" value="{{ old('fin') ? old('fin') : $empleado->contrato->fin }}" placeholder="dd-mm-yyyy">
+            <input id="fin" class="form-control" type="text" name="fin" value="{{ old('fin') ? old('fin') : $empleado->contratos->last()->fin }}" placeholder="dd-mm-yyyy">
           </div>
 
           <div class="form-group {{ $errors->has('jornada') ? 'has-error' : '' }}">
             <label class="control-label" class="form-control" for="jornada">Jornada: *</label>
             <select id="jornada" class="form-control" name="jornada">
               <option value="">Seleccione...</option>
-              <option value="5x2" {{ old('jornada') == '5x2' ? 'selected' : $empleado->contrato->jornada == '5x2' ? 'selected' : '' }}>5x2</option>
-              <option value="4x3" {{ old('jornada') == '4x3' ? 'selected' : $empleado->contrato->jornada == '4x3' ? 'selected' : '' }}>4x3</option>
-              <option value="7x7" {{ old('jornada') == '7x7' ? 'selected' : $empleado->contrato->jornada == '7x7' ? 'selected' : '' }}>7x7</option>
-              <option value="10x10" {{ old('jornada') == '10x10' ? 'selected' : $empleado->contrato->jornada == '10x10' ? 'selected' : '' }}>10x10</option>
-              <option value="12x12" {{ old('jornada') == '12x12' ? 'selected' : $empleado->contrato->jornada == '12x12' ? 'selected' : '' }}>12x12</option>
-              <option value="20x10" {{ old('jornada') == '20x10' ? 'selected' : $empleado->contrato->jornada == '20x10' ? 'selected' : '' }}>20x10</option>
+              <option value="5x2" {{ old('jornada') == '5x2' ? 'selected' : $empleado->contratos->last()->jornada == '5x2' ? 'selected' : '' }}>5x2</option>
+              <option value="4x3" {{ old('jornada') == '4x3' ? 'selected' : $empleado->contratos->last()->jornada == '4x3' ? 'selected' : '' }}>4x3</option>
+              <option value="7x7" {{ old('jornada') == '7x7' ? 'selected' : $empleado->contratos->last()->jornada == '7x7' ? 'selected' : '' }}>7x7</option>
+              <option value="10x10" {{ old('jornada') == '10x10' ? 'selected' : $empleado->contratos->last()->jornada == '10x10' ? 'selected' : '' }}>10x10</option>
+              <option value="12x12" {{ old('jornada') == '12x12' ? 'selected' : $empleado->contratos->last()->jornada == '12x12' ? 'selected' : '' }}>12x12</option>
+              <option value="20x10" {{ old('jornada') == '20x10' ? 'selected' : $empleado->contratos->last()->jornada == '20x10' ? 'selected' : '' }}>20x10</option>
             </select>
             <span class="help-block">Si no se selecciona, se colocara la jornada de la empresa</span>
           </div>

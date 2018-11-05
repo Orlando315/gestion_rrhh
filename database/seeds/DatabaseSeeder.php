@@ -21,5 +21,10 @@ class DatabaseSeeder extends Seeder
         'usuario' => 'empresa',
         'password' => bcrypt('123456')
       ]);
+
+      App\ConfiguracionEmpresa::create([
+        'empresa_id' => 1,
+        'jornada' => '5x2'
+      ]);
     }
 }
