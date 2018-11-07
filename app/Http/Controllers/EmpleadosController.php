@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Empleado;
 use App\EmpleadosBanco;
 use App\EmpleadosContrato;
+use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Common\Type;
 
 class EmpleadosController extends Controller
 {
@@ -213,5 +215,24 @@ class EmpleadosController extends Controller
           'flash_important' => true
           ]);
       }
+    }
+    
+    public function export(Empleado $empleado)
+    {
+      $this->exportExcel($empleado->getDataAsArray(), 'Empleado' . $empleado->id);
+    }
+
+    public function exportAll()
+    {
+      $this->exportExcel(Empleado::exportAll(), 'Jornadas');
+    }
+
+    protected function exportExcel($data, $nombre)
+    {
+      $writer = WriterFactory::create(Type::XLSX);
+      $writer->openToBrowser("{$nombre}.xlsx");
+      $writer->addRows($data);
+
+      $writer->close(); 
     }
 }

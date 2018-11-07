@@ -144,7 +144,14 @@
       <div class="col-md-12">
         <div class="box box-solid">
           <div class="box-body">
-           <div id="calendar"></div> 
+            <div class="row">
+              <div class="col-md-12">
+                <a href="{{ route('empleados.export', ['empleado' => $empleado->id])}}" class="btn btn-flat btn-success"> <i class="fa fa-file-excel-o"></i> Exportar a excel</a>  
+              </div>
+              <div class="col-md-12">
+                <div id="calendar"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -280,82 +287,7 @@
  	<script type="text/javascript">
     var jornada = @json($empleado->proyectarJornada()),
         eventos = @json($empleado->getEventos()),
-        year = new Date().getFullYear(),
-        feriados = [{
-          title: 'Feriado',
-          start: year + '-01-01',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-04-19',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-04-20',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-05-21',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-06-29',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-07-16',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-08-15',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-09-18',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-09-19',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-09-20',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-10-12',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-10-31',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-11-01',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-12-08',
-          fillday: true
-        },
-        {
-          title: 'Feriado',
-          start: year + '-12-25',
-          fillday: true
-        }];
+        feriados = @json($empleado->getFeriados());
    	
     $(document).ready(function(){
       $('#delFileModal').on('show.bs.modal', function(e){

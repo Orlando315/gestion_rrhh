@@ -16,7 +16,7 @@ class EmpleadosEvento extends Model
 
   public function getFinAttribute($date)
   {
-    $date = new Carbon("$date");
+    $date = new Carbon($date);
     return $date->addDays(1)->toDateString();
   }
 
@@ -46,5 +46,28 @@ class EmpleadosEvento extends Model
         break;
     }
     return (object) $data;
+  }
+
+  public static function feriados()
+  {
+    $feriados = [
+      date('Y') . '-01-01',
+      date('Y') . '-04-19',
+      date('Y') . '-04-20',
+      date('Y') . '-05-21',
+      date('Y') . '-06-29',
+      date('Y') . '-07-16',
+      date('Y') . '-08-15',
+      date('Y') . '-09-18',
+      date('Y') . '-09-19',
+      date('Y') . '-09-20',
+      date('Y') . '-10-12',
+      date('Y') . '-10-31',
+      date('Y') . '-11-01',
+      date('Y') . '-12-08',
+      date('Y') . '-12-25'
+    ];
+
+    return $feriados;
   }
 }

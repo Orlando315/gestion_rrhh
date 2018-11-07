@@ -29,6 +29,7 @@
         <div class="box-header with-border">
           <h3 class="box-title"><i class="fa fa-users"></i> Empleados</h3>
           <span class="pull-right">
+            <a class="btn btn-warning btn-flat" href="{{ route('empleados.exportAll') }}"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar jornadas</a>
             <a class="btn btn-success btn-flat" href="{{ route('empleados.create') }}"><i class="fa fa-plus" aria-hidden="true"></i> Nuevo empleado</a>
           </span>
         </div>
