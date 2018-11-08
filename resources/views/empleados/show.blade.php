@@ -251,7 +251,7 @@
             <form id="eventForm" class="col-md-8 col-md-offset-2" action="{{ route('eventos.store', ['empleado'=>$empleado->id]) }}" method="POST">
               <input id="eventDay" type="hidden" name="inicio" value="">
               {{ csrf_field() }}
-              <h4 class="text-center" id="eventTitle"></span></h4>
+              <h4 class="text-center" id="eventTitle"></h4>
               <div class="form-group">
                 <label for="tipo">Evento: *</label>
                 <select id="tipo" class="form-control" name="tipo" required>
@@ -260,14 +260,16 @@
                   <option value="2">Vacaciones</option>
                   <option value="3">Permiso</option>
                   <option value="4">Permiso no remunerable</option>
-                  <option value="5">Despido</option>
-                  <option value="6">Renuncia</option>
+                  @if(!$empleado->despidoORenuncia())
+                    <option value="5">Despido</option>
+                    <option value="6">Renuncia</option>
+                  @endif
                   <option value="7">Inasistencia</option>
                 </select>
               </div>
 
               <div class="form-group">
-                <label class="control-label" for="fin">Fin:</label>
+                <label class="control-label" for="fin">Fin: <span class="help-block">(Opcional)</span></label>
                 <input id="fin" class="form-control" type="text" name="fin" placeholder="yyy-mm-dd">
               </div>
 
@@ -376,7 +378,7 @@
 
       var form = $(this),
           action = form.attr('action'),
-          alert  = form.find('.alert');
+          alert  = $('#eventsModal .alert');
           button = form.find('button[type="submit"]');
 
       button.button('loading');
@@ -390,6 +392,11 @@
       })
       .done(function(r){
         if(r.response){
+
+          if(r.evento.tipo == 5 || r.evento.tipo == 6){
+            location.reload()
+          }
+
           $('#calendar').fullCalendar('renderEvent', {
             id: r.evento.id,
             className: 'clickableEvent',

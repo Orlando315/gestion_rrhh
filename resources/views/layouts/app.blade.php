@@ -113,7 +113,6 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{{ route('empleados.index') }}"><i class="fa fa-circle-o"></i>Ver empleados</a></li>
                 <li><a href="{{ route('empleados.create') }}"><i class="fa fa-circle-o"></i>Agregar empleado</a></li>
               </ul>
             </li>

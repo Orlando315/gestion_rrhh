@@ -356,4 +356,9 @@ class Empleado extends Model
     return $allData;
   }
 
+  public function despidoORenuncia()
+  {
+    return $this->eventos()->where('tipo', 5)->orWhere('tipo', 6)->count();
+  }
+
 }

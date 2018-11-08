@@ -9,6 +9,7 @@ use App\EmpleadosBanco;
 use App\EmpleadosContrato;
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Common\Type;
+use Carbon\Carbon;
 
 class EmpleadosController extends Controller
 {
@@ -134,12 +135,23 @@ class EmpleadosController extends Controller
         'dias_descanso' => 'nullable'
       ]);
 
+      if($empleado->despidoORenuncia() && $request->fin){
+        $evento = $empleado->eventos()->where('tipo', 5)->orWhere('tipo', 6)->first();
+        $eventoDate = new Carbon($evento->inicio);
+        $fin = new Carbon($request->fin);
+        if($eventoDate->lessThan($fin)){
+          return redirect('empleados/'. $empleado->id .'/edit')
+                    ->withErrors('La fecha de fin del contrato no puede ser mayor a la fecha de Renuncia/Despido: '. $evento->inicio)
+                    ->withInput();  
+        }
+      }
+
       if(!$request->jornada){
         $request->merge(['jornada' => Auth::user()->configuracion->jornada]);
       }
 
       $empleado->fill($request->all());
-      $empleado->contratos->first()->fill($request->all());
+      $empleado->contratos->last()->fill($request->all());
       $empleado->banco->fill($request->all());
 
       if($empleado->push()){
@@ -148,7 +160,7 @@ class EmpleadosController extends Controller
           'flash_class' => 'alert-success'
           ]);
       }else{
-        return redirect('empleados/create')->with([
+        return redirect('empleados/'. $empleado->id .'/edit')->with([
           'flash_message' => 'Ha ocurrido un error.',
           'flash_class' => 'alert-danger',
           'flash_important' => true
@@ -193,6 +205,30 @@ class EmpleadosController extends Controller
         'fin' => 'nullable|date_format:d-m-Y',
         'jornada' => 'nullable',
       ]);
+
+      if($empleado->despidoORenuncia()){
+        $evento = $empleado->eventos()->where('tipo', 5)->orWhere('tipo', 6)->first();
+        $eventoDate = new Carbon($evento->inicio);
+
+        $inicio = new Carbon($request->inicio);
+        if($eventoDate->lessThanOrEqualTo($inicio)){
+          return redirect('empleados/'. $empleado->id .'/cambio')
+                    ->withErrors('La fecha de inicio del contrato no puede ser mayor o igual a la fecha de Renuncia/Despido: '. $evento->inicio)
+                    ->withInput();  
+        }
+
+        if($request->fin){
+          $fin = new Carbon($request->fin);  
+          if($eventoDate->lessThan($fin)){
+            return redirect('empleados/'. $empleado->id .'/cambio')
+                      ->withErrors('La fecha de fin del contrato no puede ser mayor a la fecha de Renuncia/Despido: '. $evento->inicio)
+                      ->withInput();  
+          }
+        }else{
+          $request->merge(['fin' => $evento->inicio]);
+        }
+      }
+
       $lastContrato = $empleado->contratos->last();
 
       if(!$request->jornada){

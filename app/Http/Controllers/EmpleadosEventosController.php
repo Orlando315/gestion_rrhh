@@ -42,7 +42,17 @@ class EmpleadosEventosController extends Controller
         'fin' => 'nullable|date_format:Y-m-d',
       ]);
 
+      // Si el evento es Despido o Renuncia la fecha del evento se coloca como la fecha del ultimo contrato
+      if($request->tipo == 5 || $request->tipo == 6){
+        $request->merge(['fin' => null]);
+        
+        $lastContrato = $empleado->contratos->last();
+        $lastContrato->fin = $request->inicio;
+        $lastContrato->save();
+      }
+
       if($evento = $empleado->eventos()->create($request->all())){
+
         $response = ['response' => true, 'evento' => $evento, 'data'=> $evento->eventoData()];
       }else{
         $response = ['response' => false];
