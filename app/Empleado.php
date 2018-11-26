@@ -165,7 +165,7 @@ class Empleado extends Model
     return $feriados;
   }
 
-  public function getDataAsArray()
+  public function getDataAsArray($inicio = null, $fin = null)
   {
     // Contratos
     $lastContrato  = $this->contratos->last();
@@ -175,7 +175,11 @@ class Empleado extends Model
     // Si el lastContrato no tiene fecha de fin, se proyectan 6 meses desde la fecha de inicio
     $finLastContrato = $lastContrato->fin ?? $carbonInicioLastContrato->addMonths(6);
     // Periodo desde el inicio del 1er contrato, hasta el fin del ultimo
-    $periodo = new CarbonPeriod($firstContrato->inicio, $finLastContrato);
+
+    $inicio = $inicio ?? $firstContrato->inicio;
+    $fin    = $fin ?? $finLastContrato;
+
+    $periodo = new CarbonPeriod($inicio, $fin);
 
     // Headers para el excel
     $dataHeaders = ["{$this->rut} | {$this->nombres} {$this->apellidos}"];
@@ -318,16 +322,22 @@ class Empleado extends Model
     return $dataRow;
   }
 
-  public static function exportAll()
+  public static function exportAll($inicio = null, $fin = null)
   {
     // Tomar la fecha inicial mas baja
     $lowerDateContrato = EmpleadosContrato::orderBy('inicio', 'asc')->first();
-    $lowerStartDate = new Carbon($lowerDateContrato->inicio);
+    $inicio = $inicio ?? $lowerDateContrato->inicio;
+
+    $lowerStartDate = new Carbon($inicio);
 
     // Contrato con fecha final mas alta
     $higherDateContrato = EmpleadosContrato::orderBy('fin', 'desc')->first();
-    $higherEndDate = new Carbon($higherDateContrato->fin);
-    $higherEndDate->addMonths(6);
+    if($fin){
+      $higherEndDate = new Carbon($fin);
+    }else{
+      $higherEndDate = new Carbon($higherDateContrato->fin);
+      $higherEndDate->addMonths(6);  
+    }
 
     // Periodo desde el inicio del contrato con fecha inicial mas baja, hasta la fecha final calculada
     $periodo = new CarbonPeriod($lowerStartDate, $higherEndDate);

@@ -253,14 +253,14 @@ class EmpleadosController extends Controller
       }
     }
     
-    public function export(Empleado $empleado)
+    public function export(Request $request, Empleado $empleado)
     {
-      $this->exportExcel($empleado->getDataAsArray(), 'Empleado' . $empleado->id);
+      $this->exportExcel($empleado->getDataAsArray($request->inicio, $request->fin), 'Empleado' . $empleado->id);
     }
 
-    public function exportAll()
+    public function exportAll(Request $request)
     {
-      $this->exportExcel(Empleado::exportAll(), 'Jornadas');
+      $this->exportExcel(Empleado::exportAll($request->inicio, $request->fin), 'Jornadas');
     }
 
     protected function exportExcel($data, $nombre)

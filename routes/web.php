@@ -38,8 +38,8 @@ Route::group([ 'middleware' => ['auth'] ], function () {
   /* --- Empleados --- */
   Route::get('empleados/{empleado}/cambio', 'EmpleadosController@cambio')->name('empleados.cambio');
   Route::post('empleados/{empleado}/cambio', 'EmpleadosController@cambioStore')->name('empleados.cambioStore');
-  Route::get('empleados/{empleado}/export', 'EmpleadosController@export')->name('empleados.export');
-  Route::get('empleados/export', 'EmpleadosController@exportAll')->name('empleados.exportAll');
+  Route::post('empleados/{empleado}/export', 'EmpleadosController@export')->name('empleados.export');
+  Route::post('empleados/export', 'EmpleadosController@exportAll')->name('empleados.exportAll');
   Route::resource('empleados', 'EmpleadosController');
 
   /* --- Documentos --- */
