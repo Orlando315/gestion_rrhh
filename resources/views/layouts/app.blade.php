@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset( 'plugins/datepicker/css/bootstrap-datepicker3.min.css' ) }}">
     <!-- Fullcalendar -->
     <link rel="stylesheet" type="text/css" href="{{ asset( 'plugins/fullcalendar/fullcalendar.min.css' ) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset( 'plugins/fullcalendar/scheduler.min.css' ) }}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ asset( 'css/_all-skins.min.css' ) }}">
@@ -116,7 +117,20 @@
                 <li><a href="{{ route('empleados.create') }}"><i class="fa fa-circle-o"></i>Agregar empleado</a></li>
               </ul>
             </li>
+
+            <li>
+              <a href="{{ route('empleados.calendar') }}">
+                <i class="fa fa-calendar"></i> Ver calendario
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ route('eventos.events') }}">
+                <i class="fa fa-file-excel-o"></i> Total de eventos
+              </a>
+            </li>
   
+            
           </ul>
         </section>
         <!-- /.sidebar -->
@@ -157,6 +171,7 @@
     <script type="text/javascript" src="{{ asset( 'plugins/fullcalendar/lib/moment.min.js' ) }}"></script>
     <script type="text/javascript" src="{{ asset( 'plugins/fullcalendar/fullcalendar.min.js' ) }}"></script>
     <script type="text/javascript" src="{{ asset( 'plugins/fullcalendar/locale/es.js' ) }}"></script>
+    <script type="text/javascript" src="{{ asset( 'plugins/fullcalendar/scheduler.min.js' ) }}"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         $('div.alert').not('.alert-important').delay(7000).slideUp(300);

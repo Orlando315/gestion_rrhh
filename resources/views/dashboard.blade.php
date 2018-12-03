@@ -29,7 +29,6 @@
         <div class="box-header with-border">
           <h3 class="box-title"><i class="fa fa-users"></i> Empleados</h3>
           <span class="pull-right">
-            <button class="btn btn-flat btn-warning" data-toggle="modal" data-target="#exportModal"><i class="fa fa-file-excel-o"></i> Exportar a excel</button>
             <a class="btn btn-success btn-flat" href="{{ route('empleados.create') }}"><i class="fa fa-plus" aria-hidden="true"></i> Nuevo empleado</a>
           </span>
         </div>
@@ -64,62 +63,5 @@
         </div>
       </div>
     </div>
-
   </div>
-
-
-  <div id="exportModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="exportModalLabel">Exportar a excel</h4>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <form class="col-md-8 col-md-offset-2" action="{{ route('empleados.exportAll') }}" method="POST">
-              {{ csrf_field() }}
-
-              <div class="form-group">
-                <label class="control-label" for="inicioExport">Inicio: *</label>
-                <input id="inicioExport" class="form-control" type="text" name="inicio" placeholder="yyyy-mm-dd" required>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label" for="finExport">Fin: *</label>
-                <input id="finExport" class="form-control" type="text" name="fin" placeholder="yyyy-mm-dd" rqeuired>
-              </div>
-
-              <center>
-                <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-flat btn-success" type="submit">Enviar</button>
-              </center>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-@endsection
-
-@section('scripts')
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('#inicioExport, #finExport').datepicker({
-      format: 'yyyy-mm-dd',
-      language: 'es',
-      keyboardNavigation: false,
-      autoclose: true
-    }).on('changeDate', function(e){
-      var inicio = new Date($('#inicioExport').val()),
-          fin = new Date($('#finExport').val());
-
-      if(inicio > fin){
-        inicio.setDate(inicio.getDate() + 1)
-        var newDate = inicio.getFullYear()+'-'+(inicio.getMonth()+1)+'-'+inicio.getDate()
-        $('#finExport').datepicker('setDate', newDate)
-      }
-    });
-  })
-</script>
 @endsection

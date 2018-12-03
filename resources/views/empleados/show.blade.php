@@ -39,6 +39,14 @@
                 <span class="pull-right">{{ $empleado->apellidos }}</span>
               </li>
               <li class="list-group-item">
+                <b>Sexo</b>
+                <span class="pull-right">{{ $empleado->sexo }}</span>
+              </li>
+              <li class="list-group-item">
+                <b>Fecha de nacimiento</b>
+                <span class="pull-right">{{ $empleado->fecha_nacimiento }}</span>
+              </li>
+              <li class="list-group-item">
                 <b>RUT</b>
                 <span class="pull-right"> {{ $empleado->rut }} </span>
               </li>
@@ -113,6 +121,10 @@
               <li class="list-group-item">
                 <b>Inicio</b>
                 <span class="pull-right">{{ $empleado->contratos->last()->inicio }}</span>
+              </li>
+              <li class="list-group-item">
+                <b>Inicio de Jornada</b>
+                <span class="pull-right"> {{$empleado->contratos->last()->inicio_jornada}} </span>
               </li>
               <li class="list-group-item">
                 <b>Fin</b>

@@ -12,6 +12,7 @@ class EmpleadosContrato extends Model
     'inicio',
     'fin',
     'jornada',
+    'inicio_jornada',
     'dias_laborables',
     'dias_descanso'
   ];
@@ -26,12 +27,22 @@ class EmpleadosContrato extends Model
     $this->attributes['fin'] = $date ? date('Y-m-d', strtotime($date)) : null;
   }
 
+  public function setInicioJornadaAttribute($date)
+  {
+    $this->attributes['inicio_jornada'] = $date ? date('Y-m-d', strtotime($date)) : null;
+  }
+
   public function getInicioAttribute($date)
   {
     return date('d-m-Y', strtotime($date));
   }
 
   public function getFinAttribute($date)
+  {
+    return $date ? date('d-m-Y', strtotime($date)) : null;
+  }
+
+  public function getInicioJornadaAttribute($date)
   {
     return $date ? date('d-m-Y', strtotime($date)) : null;
   }

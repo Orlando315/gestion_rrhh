@@ -16,8 +16,10 @@ class EmpleadosEvento extends Model
 
   public function getFinAttribute($date)
   {
-    $date = new Carbon($date);
-    return $date->addDays(1)->toDateString();
+    if($date){
+      $date = new Carbon($date);
+      return $date->addDays(1)->toDateString();
+    }
   }
 
   public function eventoData()
@@ -69,5 +71,61 @@ class EmpleadosEvento extends Model
     ];
 
     return $feriados;
+  }
+
+  public static function exportAll($inicio, $fin)
+  {
+    $inicioCarbon = new Carbon($inicio);
+    $finCarbon    = new Carbon($fin);
+
+    //$periodo = new CarbonPeriod($inicioCarbon, $finCarbon);
+
+    // Headers para el excel
+    $eventosHeaders = [
+      'Empleado',
+      'Asistencia',
+      'Descanso',
+      'Licencia médica',
+      'Vacaciones',
+      'Permiso',
+      'Permiso no remunerable',
+      'Despido',
+      'Renuncia',
+      'Inasistencia'
+    ];
+
+    $allData = [$eventosHeaders];
+
+    foreach (Empleado::all() as $empleado) {
+      $dataRow = array_fill(0,  10, 0);
+
+      $nombre = "{$empleado->rut} | {$empleado->nombres} {$empleado->apellidos}";
+      $dataRow[0]  = $nombre;
+
+      $eventos = $empleado->eventos()->select('tipo', 'inicio', 'fin')
+                              ->whereBetween('inicio', [$inicio, $fin])
+                              ->get();
+
+      foreach ($eventos as $evento) {
+        if($evento->fin){
+          $eventoStart = new Carbon($evento->inicio);
+          $eventoEnd   = new Carbon($evento->fin);
+          $diff = $eventoStart->diffInDays($eventoEnd, false);
+
+          $dataRow[($evento->tipo + 2)] += $diff;
+        }else{
+          $dataRow[($evento->tipo + 2)]++;
+        }
+        
+      }
+
+      $asistencias = $empleado->countAsisencias($inicio, $fin);
+
+      $dataRow[2] = $asistencias['descanso'];
+      $dataRow[1] = ($asistencias['asistencia']- $dataRow[9] ) < 0 ? 0 : ($asistencias['asistencia'] - $dataRow[9]);
+
+      $allData = array_merge($allData, [$dataRow]);
+    }
+    return $allData;
   }
 }

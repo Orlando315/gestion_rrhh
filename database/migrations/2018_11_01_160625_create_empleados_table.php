@@ -19,6 +19,8 @@ class CreateEmpleadosTable extends Migration
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
             $table->string('nombres', 50);
             $table->string('apellidos', 50);
+            $table->string('sexo', 1);
+            $table->date('fecha_nacimiento');
             $table->string('rut', 20);
             $table->string('direccion', 100);
             $table->string('telefono', 20);

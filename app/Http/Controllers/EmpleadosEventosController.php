@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\EmpleadosEvento;
 use App\Empleado;
+use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Common\Type;
+use Carbon\Carbon;
 
 class EmpleadosEventosController extends Controller
 {
@@ -110,5 +113,31 @@ class EmpleadosEventosController extends Controller
       }
 
       return $response;
+    }
+    
+    public function exportEventsTotal(Request $request)
+    {
+      $this->exportExcel(EmpleadosEvento::exportAll($request->inicio, $request->fin), 'TotalEventos');
+    }
+
+    protected function exportExcel($data, $nombre)
+    {
+      $writer = WriterFactory::create(Type::XLSX);
+      $writer->openToBrowser("{$nombre}.xlsx");
+      $writer->addRows($data);
+
+      $writer->close(); 
+    }
+
+    public function events()
+    {
+      return view('eventos.events');
+    }
+
+    public function getEvents(Request $request)
+    {
+      $eventos = EmpleadosEvento::exportAll($request->inicio, $request->fin);
+
+      return $eventos;
     }
 }

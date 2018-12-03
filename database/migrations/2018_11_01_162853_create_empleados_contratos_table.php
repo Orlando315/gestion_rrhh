@@ -21,6 +21,7 @@ class CreateEmpleadosContratosTable extends Migration
             $table->date('inicio');
             $table->date('fin')->nullable();
             $table->string('jornada');
+            $table->date('inicio_jornada');
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Empleado;
 use App\EmpleadosBanco;
+use App\EmpleadosEvento;
 use App\EmpleadosContrato;
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Common\Type;
@@ -44,6 +45,8 @@ class EmpleadosController extends Controller
       $this->validate($request, [
         'nombres' => 'required|string',
         'apellidos' => 'required|string',
+        'sexo' => 'required',
+        'fecha_nacimiento' => 'required|date_format:d-m-Y',
         'rut' => 'required|string|unique:empleados,rut',
         'direccion' => 'required|string',
         'telefono' => 'required|string',
@@ -56,6 +59,7 @@ class EmpleadosController extends Controller
         'sueldo' => 'required|numeric',
         'inicio' => 'required|date_format:d-m-Y',
         'fin' => 'nullable|date_format:d-m-Y',
+        'inicio_jornada' => 'required|date_format:d-m-Y',
         'jornada' => 'nullable',
       ]);
 
@@ -118,6 +122,8 @@ class EmpleadosController extends Controller
       $this->validate($request, [
         'nombres' => 'required|string',
         'apellidos' => 'required|string',
+        'sexo' => 'required',
+        'fecha_nacimiento' => 'required|date_format:d-m-Y',
         'rut' => 'required|string|unique:empleados,rut,' . $empleado->id . ',id',
         'direccion' => 'required|string',
         'telefono' => 'required|string',
@@ -130,6 +136,7 @@ class EmpleadosController extends Controller
         'sueldo' => 'required|numeric',
         'inicio' => 'required|date_format:d-m-Y',
         'fin' => 'nullable|date_format:d-m-Y',
+        'inicio_jornada' => 'required|date_format:d-m-Y',
         'jornada' => 'nullable',
         'dias_laborables' => 'nullable',
         'dias_descanso' => 'nullable'
@@ -228,6 +235,8 @@ class EmpleadosController extends Controller
           $request->merge(['fin' => $evento->inicio]);
         }
       }
+      
+      $request->merge(['inicio_jornada' => $request->inicio]);
 
       $lastContrato = $empleado->contratos->last();
 
@@ -270,5 +279,14 @@ class EmpleadosController extends Controller
       $writer->addRows($data);
 
       $writer->close(); 
+    }
+
+    public function calendar()
+    {
+      $empleados = Empleado::all();
+      $eventos   = Empleado::eventsToCalendar();
+      $jornadas  = Empleado::jornadasToCalendar();
+
+      return view('empleados.calendar', ['empleados' => $empleados, 'eventos' => $eventos, 'jornadas' => $jornadas]);
     }
 }

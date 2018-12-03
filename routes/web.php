@@ -39,6 +39,7 @@ Route::group([ 'middleware' => ['auth'] ], function () {
   Route::get('empleados/{empleado}/cambio', 'EmpleadosController@cambio')->name('empleados.cambio');
   Route::post('empleados/{empleado}/cambio', 'EmpleadosController@cambioStore')->name('empleados.cambioStore');
   Route::post('empleados/{empleado}/export', 'EmpleadosController@export')->name('empleados.export');
+  Route::get('empleados/calendar', 'EmpleadosController@calendar')->name('empleados.calendar');
   Route::post('empleados/export', 'EmpleadosController@exportAll')->name('empleados.exportAll');
   Route::resource('empleados', 'EmpleadosController');
 
@@ -51,6 +52,9 @@ Route::group([ 'middleware' => ['auth'] ], function () {
   Route::get('documentos/download/{documento}', 'EmpleadosDocumentosController@download')->name('documentos.download');
 
   /* --- Eventos --- */
+  Route::get('eventos/export', 'EmpleadosEventosController@events')->name('eventos.events');
+  Route::post('eventos/export', 'EmpleadosEventosController@exportEventsTotal')->name('eventos.export');
+  Route::post('eventos/events', 'EmpleadosEventosController@getEvents')->name('eventos.getEvents');
   Route::get('eventos/', 'EmpleadosEventosController@index')->name('eventos.index');
   Route::post('eventos/{empleado}', 'EmpleadosEventosController@store')->name('eventos.store');
   Route::delete('eventos/{evento}', 'EmpleadosEventosController@destroy')->name('eventos.destroy');

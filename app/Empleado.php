@@ -22,6 +22,8 @@ class Empleado extends Model
   protected $fillable = [
     'nombres',
     'apellidos',
+    'sexo',
+    'fecha_nacimiento',
     'rut',
     'direccion',
     'telefono',
@@ -33,6 +35,16 @@ class Empleado extends Model
   protected $dates = ['deleted_at'];
 
   protected $guarded = ['empresa_id'];
+
+  public function setFechaNacimientoAttribute($date)
+  {
+    $this->attributes['fecha_nacimiento'] = $date ? date('Y-m-d', strtotime($date)) : null;
+  }
+
+  public function getFechaNacimientoAttribute($date)
+  {
+    return date('d-m-Y', strtotime($date));
+  }
 
   public function contratos()
   {
@@ -64,9 +76,9 @@ class Empleado extends Model
 
     foreach ($this->contratos()->get() as $contrato){
       
-      $contratoStart = new Carbon($contrato->inicio);
+      $contratoStart = new Carbon($contrato->inicio_jornada);
       // Si el contrato no tiene fecha de fin, se proyectan 6 meses desde la fecha de inicio
-      $contratoEnd = $contrato->fin ?? $contratoStart->copy()->addMonths(6);
+      $contratoEnd = $contrato->fin ?? $contratoStart->copy()->addYears(3);
       
       //Diferencia en dias desde el inicio hasta el fin del contrato      
       $diffInDays = $contratoStart->diffInDays($contratoEnd);
@@ -89,6 +101,7 @@ class Empleado extends Model
         }
 
         $trabajo = [
+          'resourceId' => $this->id,
           'title' => 'Trabajo ' . $contrato->jornada,
           'start' => $contratoStart->toDateString(),
           'end' => $endJornada->toDateString(),
@@ -116,6 +129,7 @@ class Empleado extends Model
         }
 
         $descanso = [
+          'resourceId' => $this->id,
           'title' => 'Descanso ' . $contrato->jornada,
           'start' => $contratoStart->toDateString(),
           'end' => $endJornada->toDateString(),
@@ -138,6 +152,7 @@ class Empleado extends Model
       $data = $evento->eventoData();
 
       $eventos[] = [
+        'resourceId' => $evento->empleado_id,
         'id' => $evento->id,
         'className' => 'clickableEvent',
         'title' => $data->titulo,
@@ -171,12 +186,12 @@ class Empleado extends Model
     $lastContrato  = $this->contratos->last();
     $firstContrato = $this->contratos->first();
     
-    $carbonInicioLastContrato = new Carbon($lastContrato->inicio);
+    $carbonInicioLastContrato = new Carbon($lastContrato->inicio_jornada);
     // Si el lastContrato no tiene fecha de fin, se proyectan 6 meses desde la fecha de inicio
-    $finLastContrato = $lastContrato->fin ?? $carbonInicioLastContrato->addMonths(6);
+    $finLastContrato = $lastContrato->fin ?? $carbonInicioLastContrato->addYears(3);
     // Periodo desde el inicio del 1er contrato, hasta el fin del ultimo
 
-    $inicio = $inicio ?? $firstContrato->inicio;
+    $inicio = $inicio ?? $firstContrato->inicio_jornada;
     $fin    = $fin ?? $finLastContrato;
 
     $periodo = new CarbonPeriod($inicio, $fin);
@@ -201,9 +216,9 @@ class Empleado extends Model
   {
     foreach ($this->contratos()->get() as $contrato){
       
-      $contratoStart = new Carbon($contrato->inicio);
+      $contratoStart = new Carbon($contrato->inicio_jornada);
       // Si el contrato no tiene fecha de fin, se proyectan 6 meses desde la fecha de inicio
-      $contratoEnd = $contrato->fin ?? $contratoStart->copy()->addMonths(6);
+      $contratoEnd = $contrato->fin ?? $contratoStart->copy()->addYears(3);
 
       // Diferencia en dias desde el inicio hasta el fin del contrato      
       $diffInDays = $contratoStart->diffInDays($contratoEnd);
@@ -227,10 +242,12 @@ class Empleado extends Model
 
         // Encuentro el index de la fecha de inicio de la jornada
         $dataStart = array_search($contratoStart->toDateString(), $dataHeaders);
-        // Crea un array temporal desde el index encontrado y la cantidad de dias de trabajo
-        $arrayTempData = array_fill($dataStart, $jornada->trabajo, 'Trabajo ' . $contrato->jornada);
-        // Reemplaza los valores del array vacio con los valores de la jornada
-        $dataRow = array_replace($dataRow, $arrayTempData);
+        if($dataStart !== false){
+          // Crea un array temporal desde el index encontrado y la cantidad de dias de trabajo
+          $arrayTempData = array_fill($dataStart, $jornada->trabajo, 'Trabajo ' . $contrato->jornada);
+          // Reemplaza los valores del array vacio con los valores de la jornada
+          $dataRow = array_replace($dataRow, $arrayTempData);
+        }
         // Se aumenta la fecha de inicio con la cantidad de dias en la jornada
         $contratoStart->addDays($jornada->trabajo);
         
@@ -252,10 +269,12 @@ class Empleado extends Model
 
         // Encuentro el index de la fecha de inicio de la jornada
         $dataStart = array_search($contratoStart->toDateString(), $dataHeaders);
-        // Crea un array temporal desde el index encontrado y la cantidad de dias de descanso
-        $arrayTempData = array_fill($dataStart, $jornada->descanso, 'Descanso ' . $contrato->jornada);
-        // Reemplaza los valores del array vacio con los valores de la jornada
-        $dataRow = array_replace($dataRow, $arrayTempData);
+        if($dataStart !== false){
+          // Crea un array temporal desde el index encontrado y la cantidad de dias de descanso
+          $arrayTempData = array_fill($dataStart, $jornada->descanso, 'Descanso ' . $contrato->jornada);
+          // Reemplaza los valores del array vacio con los valores de la jornada
+          $dataRow = array_replace($dataRow, $arrayTempData);
+        }
         // Se aumenta la fecha de inicio con la cantidad de dias en la jornada
         $contratoStart->addDays($jornada->descanso);
       }// For invertal
@@ -326,7 +345,7 @@ class Empleado extends Model
   {
     // Tomar la fecha inicial mas baja
     $lowerDateContrato = EmpleadosContrato::orderBy('inicio', 'asc')->first();
-    $inicio = $inicio ?? $lowerDateContrato->inicio;
+    $inicio = $inicio ?? $lowerDateContrato->inicio_jornada;
 
     $lowerStartDate = new Carbon($inicio);
 
@@ -359,7 +378,7 @@ class Empleado extends Model
       $jornadas    = $empleado->proyectarJornadaAsArray($dataRow, $dataHeaders);
       $jornadas[0] = $nombre;
       $eventos     = $empleado->getEventosAsArray($dataRow, $dataHeaders);
-      $eventos[0 ] = $nombre;
+      $eventos[0]  = $nombre;
 
       $allData = array_merge($allData, [$jornadas, $eventos]);
     }
@@ -369,6 +388,135 @@ class Empleado extends Model
   public function despidoORenuncia()
   {
     return $this->eventos()->where('tipo', 5)->orWhere('tipo', 6)->count();
+  }
+
+  public static function eventsToCalendar()
+  {
+    $eventos = [];
+    foreach(Empleado::all() as $empleado){
+      $eventos = array_merge($eventos, $empleado->getEventos());
+    }
+    return $eventos;
+  }
+
+  public function countAsisencias($inicio, $fin)
+  {
+    $totales = [
+      'asistencia' => 0,
+      'descanso' => 0
+    ];
+
+    $exportStart = new Carbon($inicio);
+    $exportEnd   = new Carbon($fin);
+
+    foreach ($this->contratos()->where('inicio', '<', $fin)->get() as $contrato){
+      
+      $contratoStart = new Carbon($contrato->inicio_jornada);
+      // Si el contrato no tiene fecha de fin, se proyectan 6 meses desde la fecha de inicio
+      $contratoEnd = $contrato->fin ?? $contratoStart->copy()->addYears(3);
+
+      // Diferencia en dias desde el inicio hasta el fin del contrato      
+      $diffInDays = $contratoStart->diffInDays($contratoEnd);
+      $jornada = $contrato->jornada();
+      // Intervalos a iterar para generar los bloquees de trabajo + descanso
+      $interval = (int) ceil($diffInDays / $jornada->interval);
+      $endDifInDays = 1;
+
+      for ($i=0; $i < $interval; $i++){
+        $endJornada = $contratoStart->copy()->addDays($jornada->trabajo-1);
+
+        //Si la fecha de inicio de la jornada es mayor a le fecha de fin del reporte,
+        //Salir de todo.
+        if($exportEnd->diffInDays($contratoStart, false) > 0){
+          break;
+        }
+
+        if($i == ($interval - 1)){
+          $endDifInDays = $endJornada->diffInDays($contratoEnd, false);
+
+          // Si fecha final de la jornada es mayor a la fecha final de contrato
+          // se le restan la diferencia en dias a esa jornada
+          if($endDifInDays < 0){
+            $endJornada = $endJornada->subDays(($endDifInDays * -1));
+          }
+        }
+
+        $exportStartDifInDays = $exportStart->diffInDays($contratoStart, false);
+        $exportEndDifInDays = $exportEnd->diffInDays($contratoStart, false);
+        
+        //Evaluar diferencia en dias entre el inicio del reporte, y el inicio de la jornada
+        if($exportStartDifInDays >= 0 && $exportEndDifInDays <= $jornada->trabajo){
+          //Evaluar diferencia en dias entre el fin del reporte y el fin de la jornada
+          $exportEndDifInDays = $exportEnd->diffInDays($endJornada, false);
+          if($exportEndDifInDays >= 0){
+            $totales['asistencia'] += $jornada->trabajo - $exportEndDifInDays;
+            break;
+          }else{
+            $totales['asistencia'] += $jornada->trabajo;
+          }
+          
+        }elseif(($exportStartDifInDays * -1) <= $jornada->trabajo){
+          $totales['asistencia'] += $jornada->trabajo - ($exportStartDifInDays* -1);
+        }
+
+        // Se aumenta la fecha de inicio con la cantidad de dias en la jornada
+        $contratoStart->addDays($jornada->trabajo);
+
+        if($endDifInDays < 0){
+          continue;
+        }
+
+        $endJornada = $contratoStart->copy()->addDays($jornada->descanso-1);
+
+        if($i == ($interval - 1)){
+          $endDifInDays = $endJornada->diffInDays($contratoEnd, false);
+
+          // Si fecha final de la jornada es menor a la fecha final de contrato
+          // se le restan la diferencia en dias a sa jornada
+          if($endDifInDays < 0){
+            $endJornada = $endJornada->subDays(($endDifInDays * -1));
+          }
+        }
+
+        $exportStartDifInDays = $exportStart->diffInDays($contratoStart, false);
+        $exportEndDifInDays = $exportEnd->diffInDays($contratoStart, false);
+        
+        //Evaluar diferencia en dias entre el inicio del reporte, y el inicio de la jornada
+        if($exportStartDifInDays >= 0 && $exportEndDifInDays <= $jornada->descanso){
+          //Evaluar diferencia en dias entre el fin del reporte y el fin de la jornada
+          $exportEndDifInDays = $exportEnd->diffInDays($endJornada, false);
+
+          if($exportEndDifInDays >= 0){
+            $totales['descanso'] += $jornada->descanso - $exportEndDifInDays;
+            break;
+          }else{
+            $totales['descanso'] += $jornada->descanso;
+          }
+          
+        }elseif(($exportStartDifInDays * -1) <= $jornada->descanso){
+          $totales['descanso'] += $jornada->descanso - ($exportStartDifInDays* -1);
+        }
+
+        // Se aumenta la fecha de inicio con la cantidad de dias en la jornada
+        $contratoStart->addDays($jornada->descanso);
+      }// For invertal
+
+    }// Foreach contratos
+
+    return $totales;
+  }
+
+  public static function jornadasToCalendar()
+  {
+    $jornadas = ['trabajo' => [], 'descanso' => []];
+    foreach (Empleado::all() as $empleado) {
+      $jornada = $empleado->proyectarJornada();
+
+      $jornadas['trabajo'] = array_merge($jornadas['trabajo'], $jornada['trabajo']);
+      $jornadas['descanso'] = array_merge($jornadas['descanso'], $jornada['descanso']);
+    }
+
+    return $jornadas;
   }
 
 }

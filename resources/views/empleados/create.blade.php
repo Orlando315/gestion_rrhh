@@ -29,6 +29,20 @@
             <input id="apellidos" class="form-control" type="text" name="apellidos" maxlength="50" value="{{ old('apellidos') ? old('apellidos') : '' }}" placeholder="Apellidos" required>
           </div>
 
+          <div class="form-group {{ $errors->has('sexo') ? 'has-error' : '' }}">
+            <label class="control-label" for="sexo">Sexo: *</label>
+            <select id="sexo" class="form-control" name="sexo">
+              <option value="">Seleccione...</option>
+              <option value="M" {{ old('sexo') == 'M' ? 'selected' : '' }}>Masculino</option>
+              <option value="F" {{ old('sexo') == 'F' ? 'selected' : '' }}>Femenino</option>
+            </select>
+          </div>
+
+          <div class="form-group {{ $errors->has('fecha_nacimiento') ? 'has-error' : '' }}">
+            <label class="control-label" for="fecha_nacimiento">Fecha de nacimiento: *</label>
+            <input id="fecha_nacimiento" class="form-control" type="text" name="fecha_nacimiento" value="{{ old('fecha_nacimiento') ? old('fecha_nacimiento') : '' }}" placeholder="dd-mm-yyyy">
+          </div>
+
           <div class="form-group {{ $errors->has('rut') ? 'has-error' : '' }}">
             <label class="control-label" for="rut">RUT: *</label>
             <input id="rut" class="form-control" type="text" name="rut" maxlength="20" value="{{ old( 'rut' ) ? old( 'rut' ) : '' }}" placeholder="RUT" required>
@@ -92,6 +106,11 @@
             <input id="inicio" class="form-control" type="text" name="inicio" value="{{ old('inicio') ? old('inicio') : '' }}" placeholder="dd-mm-yyyy" required>
           </div>
 
+          <div class="form-group {{ $errors->has('inicio_jornada') ? 'has-error' : '' }}">
+            <label class="control-label" for="inicio_jornada">Inicio de Jornada:</label>
+            <input id="inicio_jornada" class="form-control" type="text" name="inicio_jornada" value="{{ old('inicio_jornada') ? old('inicio_jornada') : '' }}" placeholder="dd-mm-yyyy">
+          </div>
+
           <div class="form-group {{ $errors->has('fin') ? 'has-error' : '' }}">
             <label class="control-label" for="fin">Fin:</label>
             <input id="fin" class="form-control" type="text" name="fin" value="{{ old('fin') ? old('fin') : '' }}" placeholder="dd-mm-yyyy">
@@ -116,8 +135,8 @@
         <div class="alert alert-danger alert-important">
           <ul>
             @foreach($errors->all() as $error)
-               <li>{{ $error }}</li>
-             @endforeach
+              <li>{{ $error }}</li>
+            @endforeach
           </ul>  
         </div>
         @endif
@@ -134,7 +153,18 @@
 @section('scripts')
 <script type="text/javascript">
   $(document).ready( function(){
-    $('#inicio, #fin').datepicker({
+    var endDate = new Date();
+    endDate.setFullYear(new Date().getFullYear()-18);
+
+    $('#fecha_nacimiento').datepicker({
+      format: 'dd-mm-yyyy',
+      endDate: endDate,
+      language: 'es',
+      keyboardNavigation: false,
+      autoclose: true
+    });
+
+    $('#inicio, #fin, #inicio_jornada').datepicker({
       format: 'dd-mm-yyyy',
       startDate: 'today',
       language: 'es',
